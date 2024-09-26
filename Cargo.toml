@@ -7,31 +7,20 @@ rust-version = "1.77"
 
 [dependencies]
 cortex-m-rt = "0.7.3"
-embedded-hal = { version = "1.0.0" }
-
-# We're using a Pico by default on this template
-rp-pico = "0.9"
-
-# but you can use any BSP. Uncomment this to use the pro_micro_rp2040 BSP instead
-# sparkfun-pro-micro-rp2040 = "0.8"
-
 cortex-m = "0.7.7" 
+embedded-hal = { version = "1.0.0" }
+embedded-graphics = "0.7.1"
 dht-sensor = "0.2.1"
-# dht11 is work 
-# dht11 = "0.1.0"
 fugit = "0.3.6"
-futures = { version = "0.3.30", default-features = false, features = [
-    "async-await",
-] }
 panic-halt = "0.2.0"
+rp-pico = "0.9"
 rp2040-hal = { version = "0.10.0", features = [
     "critical-section-impl",
     "rt",
     "defmt",
 ] }
 cfg-if = "1.0"
-ssd1306 = "0.9.0"
-embedded-graphics = "0.8.1"
+ssd1306 = "0.7.1"
 
 # cargo build/run
 [profile.dev]
