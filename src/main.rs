@@ -40,6 +40,7 @@
 //! pickup from https://github.com/rp-rs/rp-hal-boards/blob/7431e73c51a89b2fe81afb51896b2530afd40b8c/boards/rp-pico/examples/pico_i2c_oled_display_ssd1306.rs
 #![no_std]
 #![no_main]
+
 use core::fmt::Write;
 
 // For string formatting.
@@ -57,7 +58,6 @@ use embedded_hal::{delay::DelayNs, digital::OutputPin};
 // Ensure we halt the program on panic (if we don't mention this crate it won't
 // be linked)
 use panic_halt as _;
-
 
 // A shorter alias for the Hardware Abstraction Layer, which provides
 // higher-level drivers.
@@ -86,6 +86,8 @@ use ssd1306::{prelude::*, Ssd1306};
 
 pub mod fmtbuf;
 use fmtbuf::FmtBuf;
+pub mod dhtxx;
+use dhtxx::get;
 /// Entry point to our bare-metal application.
 ///
 /// The `#[entry]` macro ensures the Cortex-M start-up code calls this function
@@ -169,17 +171,8 @@ fn main() -> ! {
     // Use GPIO 22 as an InOutPin
     let mut dht_pin = hal::gpio::InOutPin::new(pins.gpio22);
     let _ = dht_pin.set_high();
-    cfg_if::cfg_if! {
-            if #[cfg(feature = "dht11")] {
-                let mut temp : i8 = 0;
-                let mut humi : u8 = 0;
-            } else if #[cfg(feature = "dht22")] {
-                let mut temp : f32 = 0.0;
-                let mut humi : f32 = 0.0;
-            }
-    }
 
-    let mut line0_p2 :FmtBuf = FmtBuf::new();
+    let mut line0_p2: FmtBuf = FmtBuf::new();
     #[cfg(feature = "dht11")]
     write!(&mut line0_p2, "{}", "dht11").unwrap();
 
@@ -200,25 +193,41 @@ fn main() -> ! {
 
         // Perform a sensor reading
         let measurement = Reading::read(&mut delay, &mut dht_pin).unwrap();
-        (temp, humi) = (measurement.temperature, measurement.relative_humidity);
+        let (temp, humi) = get(measurement).value();
+        //(temp, humi) = (measurement.temperature, measurement.relative_humidity);
 
         Text::with_baseline("SensorType", Point::new(3, 2), text_style, Baseline::Top)
-        .draw(&mut display)
-        .unwrap();
+            .draw(&mut display)
+            .unwrap();
 
-        Text::with_baseline(line0_p2.as_str(), Point::new(74, 2), text_style, Baseline::Top)
+        Text::with_baseline(
+            line0_p2.as_str(),
+            Point::new(74, 2),
+            text_style,
+            Baseline::Top,
+        )
         .draw(&mut display)
         .unwrap();
 
         write!(&mut line1, "{} {}°C", "temp: ", temp).unwrap(); // ℃ ,°C
-        Text::with_baseline(line1.as_str(), Point::new(32, 18), text_style, Baseline::Top)
-            .draw(&mut display)
-            .unwrap();
+        Text::with_baseline(
+            line1.as_str(),
+            Point::new(32, 18),
+            text_style,
+            Baseline::Top,
+        )
+        .draw(&mut display)
+        .unwrap();
 
         write!(&mut line2, "{}% RH", humi).unwrap();
-        Text::with_baseline(line2.as_str(), Point::new(32, 34), text_style, Baseline::Top)
-            .draw(&mut display)
-            .unwrap();
+        Text::with_baseline(
+            line2.as_str(),
+            Point::new(32, 34),
+            text_style,
+            Baseline::Top,
+        )
+        .draw(&mut display)
+        .unwrap();
 
         Line::new(Point::new(0, 0), Point::new(127, 0))
             .into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 1))
@@ -256,7 +265,8 @@ fn main() -> ! {
             .unwrap();
 
         display.flush().unwrap();
-        // Wait a bit:
-        timer.delay_ms(500);
+        // delay for 1 sec
+        //per loop is 1 sec
+        timer.delay_ms(1000);
     }
 }
