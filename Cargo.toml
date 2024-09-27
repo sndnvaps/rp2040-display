@@ -75,6 +75,6 @@ lto = 'fat'
 opt-level = 3
 
 [features]
-default = ["dht11"]
+default = ["dht22"]
 dht11 = []
 dht22 = []
