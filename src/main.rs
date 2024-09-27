@@ -193,9 +193,14 @@ fn main() -> ! {
         let (temp, humi) = get(measurement).value();
         //(temp, humi) = (measurement.temperature, measurement.relative_humidity);
 
-        Text::with_baseline("SensorType", Point::new(3, 2),   character_style.clone(), Baseline::Top)
-            .draw(&mut display)
-            .unwrap();
+        Text::with_baseline(
+            "SensorType",
+            Point::new(3, 2),
+            character_style.clone(),
+            Baseline::Top,
+        )
+        .draw(&mut display)
+        .unwrap();
 
         Text::with_baseline(
             line0_p2.as_str(),
