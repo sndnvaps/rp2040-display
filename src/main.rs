@@ -171,10 +171,10 @@ fn main() -> ! {
 
     let mut line0_p2: FmtBuf = FmtBuf::new();
     #[cfg(feature = "dht11")]
-    write!(&mut line0_p2, "{}", "dht11").unwrap();
+    write!(&mut line0_p2, "{}", "DHT11").unwrap();
 
     #[cfg(feature = "dht22")]
-    write!(&mut line0_p2, "{}", "dht22").unwrap();
+    write!(&mut line0_p2, "{}", "DHT22").unwrap();
 
     // Perform a sensor reading
     let mut line1 = FmtBuf::new();
@@ -206,7 +206,7 @@ fn main() -> ! {
         .draw(&mut display)
         .unwrap();
 
-        write!(&mut line1, "温度：{}°C", temp).unwrap(); // ℃ ,°C
+        write!(&mut line1, "温度： {}°C", temp).unwrap(); // ℃ ,°C
         Text::with_baseline(
             line1.as_str(),
             Point::new(32, 22),
@@ -216,7 +216,7 @@ fn main() -> ! {
         .draw(&mut display)
         .unwrap();
 
-        write!(&mut line2, "湿度：{}%", humi).unwrap();
+        write!(&mut line2, "湿度： {}%", humi).unwrap();
         Text::with_baseline(
             line2.as_str(),
             Point::new(32, 38),
