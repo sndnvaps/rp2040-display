@@ -9,7 +9,7 @@ rust-version = "1.77"
 cortex-m-rt = "0.7.3"
 cortex-m = "0.7.7" 
 embedded-hal = { version = "1.0.0" }
-embedded-graphics = "0.7.1"
+embedded-graphics = "0.8.1"
 dht-sensor = "0.2.1"
 fugit = "0.3.6"
 panic-halt = "0.2.0"
@@ -20,7 +20,8 @@ rp2040-hal = { version = "0.10.0", features = [
     "defmt",
 ] }
 cfg-if = "1.0"
-ssd1306 = "0.7.1"
+ssd1306 = "0.8.1"
+u8g2-fonts = { version = "0.4.0", features = ["embedded_graphics_textstyle"] }
 
 # cargo build/run
 [profile.dev]

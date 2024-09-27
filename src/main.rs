@@ -66,12 +66,12 @@ use rp2040_hal::Clock;
 // For in the graphics drawing utilities like the font
 // and the drawing routines:
 use embedded_graphics::{
-    mono_font::{iso_8859_9::FONT_6X9, MonoTextStyleBuilder},
     pixelcolor::BinaryColor,
     prelude::*,
     primitives::{Line, PrimitiveStyle},
     text::{Baseline, Text},
 };
+use u8g2_fonts::U8g2TextStyle;
 
 // For dht11 sensor
 #[cfg(feature = "dht11")]
@@ -158,11 +158,8 @@ fn main() -> ! {
     display.init().unwrap();
 
     // Create a text style for drawing the font:
-    let text_style = MonoTextStyleBuilder::new()
-        .font(&FONT_6X9)
-        //.font(&FONT_7X7)
-        .text_color(BinaryColor::On)
-        .build();
+    let character_style =
+        U8g2TextStyle::new(u8g2_fonts::fonts::u8g2_font_wqy12_t_gb2312, BinaryColor::On);
 
     let mut timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS, &clocks);
 
@@ -187,7 +184,7 @@ fn main() -> ! {
         // Empty the display:
         // Draw 3 lines of text:
         //reset before loop
-        display.clear();
+        let _ = display.clear(BinaryColor::Off);
         line1.reset();
         line2.reset();
 
@@ -196,34 +193,34 @@ fn main() -> ! {
         let (temp, humi) = get(measurement).value();
         //(temp, humi) = (measurement.temperature, measurement.relative_humidity);
 
-        Text::with_baseline("SensorType", Point::new(3, 2), text_style, Baseline::Top)
+        Text::with_baseline("SensorType", Point::new(3, 2),   character_style.clone(), Baseline::Top)
             .draw(&mut display)
             .unwrap();
 
         Text::with_baseline(
             line0_p2.as_str(),
             Point::new(74, 2),
-            text_style,
+            character_style.clone(),
             Baseline::Top,
         )
         .draw(&mut display)
         .unwrap();
 
-        write!(&mut line1, "{} {}°C", "temp: ", temp).unwrap(); // ℃ ,°C
+        write!(&mut line1, "温度：{}°C", temp).unwrap(); // ℃ ,°C
         Text::with_baseline(
             line1.as_str(),
-            Point::new(32, 18),
-            text_style,
+            Point::new(32, 22),
+            character_style.clone(),
             Baseline::Top,
         )
         .draw(&mut display)
         .unwrap();
 
-        write!(&mut line2, "{}% RH", humi).unwrap();
+        write!(&mut line2, "湿度：{}%", humi).unwrap();
         Text::with_baseline(
             line2.as_str(),
-            Point::new(32, 34),
-            text_style,
+            Point::new(32, 38),
+            character_style.clone(),
             Baseline::Top,
         )
         .draw(&mut display)
