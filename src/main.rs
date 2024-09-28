@@ -211,7 +211,7 @@ fn main() -> ! {
         .draw(&mut display)
         .unwrap();
 
-        write!(&mut line1, "温度： {}°C", temp).unwrap(); // ℃ ,°C
+        write!(&mut line1, "温度： {}℃", temp).unwrap(); // ℃ ,°C
         Text::with_baseline(
             line1.as_str(),
             Point::new(32, 22),
